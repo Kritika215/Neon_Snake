@@ -1,0 +1,221 @@
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --beat: 0px;
+    --bg: #050505;
+    --snake: cyan;
+    --food: red;
+    --text: #f0f0f0;
+}
+
+main {
+    width: 100%;
+    height: 100%;
+}
+
+section#game {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at top, #151515, var(--bg));
+    color: var(--text);
+    font-family: system-ui, sans-serif;
+    overflow: hidden;
+}
+
+/* CRT SCANLINES */
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(to bottom,
+            rgba(255, 255, 255, 0.04),
+            rgba(255, 255, 255, 0.04) 1px,
+            transparent 2px,
+            transparent 4px);
+    opacity: 0.25;
+    z-index: 999;
+}
+
+/* LAYOUT */
+#game {
+    padding: 32px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+#infos {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* BOARD */
+#board {
+    flex: 1;
+    min-height: 300px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    grid-template-rows: repeat(auto-fill, minmax(50px, 1fr));
+    border: 1px solid #555;
+}
+
+
+/* BLOCK */
+.block {
+    border-radius: 50%;
+}
+
+/* SNAKE BODY */
+.fill {
+    background: radial-gradient(circle, #ffffff, #9ff);
+    animation: glow 1.2s infinite alternate;
+}
+
+
+/* MOTION BLUR TRAIL */
+.fill:nth-child(3) {
+    opacity: 0.7;
+    filter: blur(1px);
+}
+
+.fill:nth-child(5) {
+    opacity: 0.5;
+    filter: blur(2px);
+}
+
+/* SNAKE HEAD */
+.head {
+    position: relative;
+    z-index: 2;
+}
+
+.head::before,
+.head::after {
+    content: "";
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: black;
+    border-radius: 50%;
+    top: 30%;
+}
+
+.head::before {
+    left: 30%;
+}
+
+.head::after {
+    right: 30%;
+}
+
+/* FOOD */
+.food {
+    background: radial-gradient(circle, #ffb3b3, #ff2a2a);
+    box-shadow:
+        0 0 calc(15px + var(--beat)) red,
+        0 0 calc(35px + var(--beat)) rgba(255, 0, 0, 0.6);
+    animation: pulse 1s infinite;
+}
+
+/* PIXELS */
+.pixel {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    background: red;
+    pointer-events: none;
+    animation: explode 600ms ease-out forwards;
+}
+
+/* MODAL */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.start-game,
+.game-over {
+    background: #111;
+    padding: 32px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.game-over {
+    display: none;
+}
+
+/* BUTTON */
+.btn {
+    padding: 10px 24px;
+    cursor: pointer;
+}
+
+/* SHAKE */
+.shake {
+    animation: shake 0.4s;
+}
+
+/* ANIMATIONS */
+@keyframes glow {
+    from {
+        box-shadow:
+            0 0 12px cyan,
+            0 0 24px rgba(0,255,255,0.5);
+    }
+    to {
+        box-shadow:
+            0 0 22px cyan,
+            0 0 44px rgba(0,255,255,0.9);
+    }
+}
+
+
+@keyframes pulse {
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+@keyframes explode {
+    to {
+        transform: translate(var(--x), var(--y)) scale(0);
+        opacity: 0;
+    }
+}
+
+@keyframes shake {
+    25% {
+        transform: translate(-6px, 4px);
+    }
+
+    50% {
+        transform: translate(6px, -4px);
+    }
+
+    75% {
+        transform: translate(-4px, -6px);
+    }
+}
